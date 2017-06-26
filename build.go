@@ -207,8 +207,14 @@ var (
 )
 
 func init() {
+	parseFlags()
+	if goos == "windows" {
+		return
+	}
+
 	// The "syncthing" target includes a few more files found in the "etc"
 	// and "extra" dirs.
+
 	syncthingPkg := targets["syncthing"]
 	for _, file := range listFiles("etc") {
 		syncthingPkg.archiveFiles = append(syncthingPkg.archiveFiles, archiveFile{src: file, dst: file, perm: 0644})
@@ -240,8 +246,6 @@ func main() {
 	// Set path to $GOPATH/bin:$PATH so that we can for sure find tools we
 	// might have installed during "build.go setup".
 	os.Setenv("PATH", fmt.Sprintf("%s%cbin%c%s", os.Getenv("GOPATH"), os.PathSeparator, os.PathListSeparator, os.Getenv("PATH")))
-
-	parseFlags()
 
 	checkArchitecture()
 
